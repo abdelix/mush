@@ -1,0 +1,2 @@
+/home/abdel/projects/mush/build/src/CMakeFiles/get_command.dir
+/home/abdel/projects/mush/build/CMakeFiles/mush.dir

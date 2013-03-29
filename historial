@@ -1,0 +1,40 @@
+ls
+cd
+1
+1
+exit
+ls
+cd
+exit
+11
+22
+33
+exit  
+33
+exit
+11
+22
+exit
+history
+exit
+env
+exit
+ls
+exit
+ls
+!1
+!!
+man history_expand
+exit
+exit
+ls -a -l
+-l
+ls build/
+ls ls &&
+ls -l build/
+env
+env | less
+exit
+ls
+about
+exit

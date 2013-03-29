@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/abdel/projects/mush/config.h
+
+/home/abdel/projects/mush/include/get_command.h
+stdio.h
+-
+stdlib.h
+-
+ctype.h
+-
+string.h
+-
+unistd.h
+-
+termios.h
+-
+
+/home/abdel/projects/mush/main.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/wait.h
+-
+readline/readline.h
+-
+readline/history.h
+-
+include/get_command.h
+/home/abdel/projects/mush/include/get_command.h
+config.h
+/home/abdel/projects/mush/config.h
+

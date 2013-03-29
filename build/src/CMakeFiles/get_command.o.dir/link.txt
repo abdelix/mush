@@ -1,0 +1,2 @@
+/usr/bin/ar cr libget_command.o.a  CMakeFiles/get_command.o.dir/get_command.o
+/usr/bin/ranlib libget_command.o.a

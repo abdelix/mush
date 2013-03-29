@@ -1,0 +1,1 @@
+/usr/bin/gcc  -g    CMakeFiles/mush.dir/main.c.o  -o mush -rdynamic -L/home/abdel/projects/mush/build/src src/libget_command.a -lreadline -Wl,-rpath,/home/abdel/projects/mush/build/src 
