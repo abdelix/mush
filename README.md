@@ -8,7 +8,7 @@ By Abdelfetah Hadij (abdel.14(at)gmail.com)
 Dependencies
 ============
 
-*Gnu Readline
+* Gnu Readline
 
 License 
 =======
