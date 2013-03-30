@@ -109,6 +109,19 @@ void cambiar_dir(char **args)
  }
 }
 
+
+
+void show_history()
+{
+  HIST_ENTRY *entry;
+  int i=1;
+  while((entry=history_get(i))!=NULL)
+  {
+    printf("%d)%s\n",i,entry->line);
+    i++;
+  }
+}
+
 int main(int argc, char **argv) {
   
   char **args=NULL;
@@ -167,6 +180,10 @@ int main(int argc, char **argv) {
      if(args[0]==NULL)
      {
        ;
+     }
+     else if(!strcmp(args[0],"history"))
+     {
+       show_history();
      }
      else if(!strcmp(args[0],"cd"))
      {

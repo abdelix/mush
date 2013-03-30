@@ -31,3 +31,6 @@ Project Target=mush,mush
 Use External Terminal=true
 Working Directory=
 isExecutable=false
+
+[Project]
+VersionControlSupport=kdevgit
