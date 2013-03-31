@@ -81,6 +81,7 @@ int main(int argc, char **argv) {
 
        free(comand);
        free( buf_command);
+       
       
        buf_command=readline(prompt);
     
@@ -120,11 +121,12 @@ int main(int argc, char **argv) {
     
     //analizamos el comando
     
+    args=NULL;
     l=parse(comand,&args);
     
     //interpretamos el comando
     eval_cmd(args);
-   
+    free(args);
   }//while(1) 
    
     
