@@ -30,6 +30,13 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+/*
+ * Biblioteca readline para leer comandos :
+ * -Facil edicion estilo vim
+ * -historial
+ * ... 
+ * -la usada por bash
+ */
 #include <readline/readline.h>
 #include <readline/history.h>
 
