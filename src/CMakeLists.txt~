@@ -1,2 +1,2 @@
-add_library(get_command.o STATIC get_command.c)
+add_library(get_command STATIC get_command.c)
 

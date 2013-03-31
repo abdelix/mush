@@ -12,13 +12,17 @@ include_directories("${PROJECT_SOURCE_DIR}/include")
 
 
 add_executable(mush main.c)
-#librerias adicionales
-target_link_libraries (mush get_command)
-#añadir directoriosa
+
+#añadir directorios
 add_subdirectory(include)
 add_subdirectory(src)
 
 
-
-
+#librerias adicionales
+target_link_libraries (mush parser)
 target_link_libraries(mush readline)
+
+
+
+
+
