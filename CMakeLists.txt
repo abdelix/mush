@@ -19,8 +19,8 @@ add_subdirectory(src)
 
 
 #librerias adicionales
-target_link_libraries (mush parser)
-target_link_libraries(mush readline)
+target_link_libraries (mush parser readline commands)
+
 
 
 
