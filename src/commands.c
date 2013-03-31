@@ -57,3 +57,41 @@ void show_history()
     i++;
   }
 }
+
+int eval_cmd(char **args)
+{
+  
+  if (args==NULL)
+  {
+    //Nothing to do
+    
+    return 0;
+    
+  }
+  
+ //is a shell command? 
+if(!strcmp(args[0],"history"))
+     {
+       show_history();
+     }
+     
+     else if(!strcmp(args[0],"cd"))
+	{
+	  cambiar_dir(args);
+	}
+	else if(!strcmp(args[0],"exit"))
+	  {
+	    
+	    write_history("/home/abdel/projects/mush/historial");
+	    printf("\n Goodbye!!\n");
+	    exit(0);
+	
+	  }
+	  //not a shell command
+	  else 
+	  {
+	    execute_fg(args);
+	  }
+  return 0;
+
+}

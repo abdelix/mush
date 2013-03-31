@@ -97,32 +97,8 @@ int main(int argc, char **argv) {
      
      
      
-     if(args[0]==NULL)
-     {
-       ;
-     }
-     else if(!strcmp(args[0],"history"))
-     {
-       show_history();
-     }
-     else if(!strcmp(args[0],"cd"))
-     {
-       cambiar_dir(args);
-     }
-     else if(!strcmp(args[0],"exit"))
-     {
-       write_history("/home/abdel/projects/mush/historial");
-       printf("\n Goodbye!!\n");
-      exit(0);
-       
-     }
-     else if(args!=NULL)
-     {
-       execute_fg(args);
-     }
-     
-   }
-   
+  eval_cmd(args);
+   }//while 
    
     
     return 0;

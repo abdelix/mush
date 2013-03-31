@@ -44,7 +44,7 @@ int execute_fg(char **args);
  * Note : only args[0] is used as the dir path
  * 
  * @param : args list or arguments (only args[0] i used for now)
- * @return : 0 on succes , -1 on failure
+ * @return : 
  * 
  * */
 void cambiar_dir(char **args);
@@ -53,5 +53,7 @@ void cambiar_dir(char **args);
  * 
  */
 void show_history();
+
+int eval_cmd(char **args);
 
 #endif
