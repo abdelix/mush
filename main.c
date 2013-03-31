@@ -45,7 +45,7 @@
 int main(int argc, char **argv) {
   
   char **args=NULL;
-  char buf[1024];
+  char prompt[1024];
   char *buf_command=NULL;
   char *comand=NULL;
   int i=0;
@@ -56,49 +56,76 @@ int main(int argc, char **argv) {
     
     using_history();
     read_history("/home/abdel/projects/mush/historial");
- 
-   
+  /*
+   * MENSAJE DE BIENVENIDA
+   * 
+   */
    printf("Bienvenido a µSH version %d.%d\n",VERSION_MAJOR,VERSION_MINOR);
+   
+   
+   /*
+    * 
+    * BUCLE PRINCIPAL
+    * 
+    */
    
    while(1)
    {
-     sprintf(buf,"µSH @ %s ]> ",get_current_dir_name());
+     sprintf(prompt,"µSH @ %s ]> ",get_current_dir_name());
      
     
      do{
-    // get_command(buf);
-    free(comand);
-    
-    buf_command=readline(buf);
-    
-    //efectuamos expansiones de expresiones del historial
-    res=history_expand(buf_command,&comand);
-    switch(res)
-    {
-      //mostramos el resultado de la expansion si esta a tenido lugar
-      case 1:
-	printf("%s\n",comand);
-	break;
-      case -1 :
-	fprintf(stderr,"Error en la expansion : %s\n",comand);
-	break;
-      default:
+       /*
+	* Liberamos la memoria anteriormente reservada si co
+	*/
+
+       free(comand);
+       free( buf_command);
       
-	;
-    }
-     }while(res==-1);
-    //añadimos el comando al historial
-     add_history(comand);
+       buf_command=readline(prompt);
     
-     
-     l=parse(comand,&args);
-     
     
+       //efectuamos expansiones de expresiones del historial
+       res=history_expand(buf_command,&comand);
+    
+       switch(res)
+       {
+      
+	 //mostramos el resultado de la expansion si esta a tenido lugar
+      
+	 case 1:
+	
+	   printf("%s\n",comand);
+	
+	   break;
+      
+	 case -1 :
+	
+	   fprintf(stderr,"Error en la expansion : %s\n",comand);
+	
+	   break;
      
+	 default:
+	   ;
+      
+      
+	 
+      }
      
+    }while(res==-1);
+    
+    //añadimos el comando la lista del historial historial
      
-  eval_cmd(args);
-   }//while 
+    add_history(comand);
+    
+    //analizamos el comando
+    
+    l=parse(comand,&args);
+    
+    //interpretamos el comando
+    eval_cmd(args);
+   
+  }//while(1) 
    
     
     return 0;
