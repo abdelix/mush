@@ -122,8 +122,7 @@ int main(int argc, char **argv) {
      
     }while(res==-1);
     
-    //añadimos el comando la lista del historial historial
-     
+    //añadimos el comando la lista del historial 
     add_history(comand);
     
     //analizamos el comando
