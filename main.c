@@ -29,7 +29,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
+#include <signal.h>
 /*
  * Biblioteca readline para leer comandos :
  * -Facil edicion estilo vim
@@ -46,6 +46,19 @@
 #include "include/commands.h"
 
  
+ 
+ void child_end(int x)
+ {
+   int pid;
+   int status;
+   
+   pid=wait(&status);
+  if(pid>0)
+  {
+   printf("\nProcces [%d] ended with code :%d\n",pid,status);
+  }
+   signal(SIGCHLD,&child_end);
+ }
 
 
 
@@ -58,6 +71,9 @@ int main(int argc, char **argv) {
   int i=0;
   int res;
   long unsigned int l=0; //memeria reservada al buffer
+    
+    
+      signal(SIGCHLD,&child_end);
     
     //activamos el historial en readline
     
@@ -133,6 +149,9 @@ int main(int argc, char **argv) {
     //interpretamos el comando
     eval_cmd(args,l);
     free(args);
+    
+    //child_end(0);
+    
   }//while(1) 
    
     
