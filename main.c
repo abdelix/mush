@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
     l=parse(comand,&args);
     
     //interpretamos el comando
-    eval_cmd(args);
+    eval_cmd(args,l);
     free(args);
   }//while(1) 
    

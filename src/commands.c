@@ -4,6 +4,25 @@ int execute_fg(char **args)
 {
   int pid;
   int status;
+  pid=execute_bg(args);
+  
+  if(pid>0)
+  {
+    waitpid(pid,&status,0);
+   
+    printf("\nProgram exited with code : %d \n",status);
+    
+    return 0;
+  }
+  
+  else return -1;
+}
+
+
+int execute_bg(char **args)
+{
+  int pid;
+  int status;
   
   
   pid=fork();
@@ -26,16 +45,10 @@ int execute_fg(char **args)
     
   }
   
-  else 
-  {
-    //waitpid(pid,&status,0);
-    while(wait(&status)!=pid);
-    printf("\nProgram exited with code : %d \n",status);
-  }
+ 
   
-  return 0;
+  return pid;
 }
-
 
 void cambiar_dir(char **args)
 {
@@ -58,16 +71,19 @@ void show_history()
   }
 }
 
-int eval_cmd(char **args)
+int eval_cmd(char **args,int argc)
 {
+  int pid;
   
-  if (args==NULL)
+  if (argc==0)
   {
     //Nothing to do
     
     return 0;
     
   }
+  
+ 
   
  //is a shell command? 
 if(!strcmp(args[0],"history"))
@@ -88,6 +104,20 @@ if(!strcmp(args[0],"history"))
 	
 	  }
 	  //not a shell command
+	  
+	  else if(!strcmp(args[argc-1],"&"))
+	  {
+	   //free(args[argc-1]);
+	   args[argc-1]=NULL;
+	   pid=execute_bg(args);
+	   
+	   if(pid>0)
+	   {
+	     printf("Proram executed with pid : %d\n",pid);
+	   }
+	    
+	  }
+	  
 	  else 
 	  {
 	    execute_fg(args);

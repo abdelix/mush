@@ -4,6 +4,8 @@
 int parse(char *buf,char ***args)
 {
   int argc=0;
+  
+  
   while(*buf!='\0')
   {
     while(*buf== ' '  || *buf=='\t' )

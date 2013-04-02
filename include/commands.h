@@ -44,6 +44,16 @@
  * 
  */
 int execute_fg(char **args);
+
+/*
+ * Executes a command in background
+ * 
+ * @param : args list of arguments
+ * @return: 0 on succes , -1 on failure
+ * 
+ */
+int execute_bg(char **args);
+
 /*
  * Simple cd command implementation 
  * Note : only args[0] is used as the dir path
@@ -59,6 +69,6 @@ void cambiar_dir(char **args);
  */
 void show_history();
 
-int eval_cmd(char **args);
+int eval_cmd(char **args,int argc);
 
 #endif
