@@ -1,4 +1,4 @@
-/*  commands.h 
+/*  builtin.h 
  * 
  * 
  * Copyright 2013 abdel <abdel.14@gmail.com>
@@ -20,42 +20,65 @@
  * 
  * 
  */
+
+/*
+ * Contiene las funciones que implementa el shell
+ * 
+ * 
+ * 
+ */
+
+/*************************************************/
+#ifndef __MUSH_BUILTIN_H__
+#define __MUSH_BUILTIN_H__
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
-
 #include <readline/readline.h>
 #include <readline/history.h>
 
-
-#ifndef  __COMMANDS_H__ 
-#define __COMMANDS_H__ 
-
-/*
- * Executes a command in foreground
- * 
- * @param : args list of arguments
- * @return: 0 on succes , -1 on failure
- * 
- */
-int execute_fg(char **args);
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
 
 /*
- * Executes a command in background
  * 
- * @param : args list of arguments
- * @return: 0 on succes , -1 on failure
+ * if args[0] is internal command exeutes it and return 0 otherwise return -1
+ * 
+ * */
+int execute_builtins(int argc,char ** args);
+
+/*
+ * Simple change directory command  
+ * Note : only args[0] is used as the dir path
+ * 
+ * @param : args list or arguments (only args[0] i used for now)
+ * @return : 
+ * 
+ * */
+void  change_dir(int argc,char **args);
+
+/*
+ * 
+ * comando history
  * 
  */
-int execute_bg(char **args);
+void mush_history(int argc,char **args);
+/*
+ * Show the whole history
+ * 
+ */
+void show_history();
 
 
+/*
+ * Exits the shell
+ * 
+ */
 
-int eval_cmd(char **args,int argc);
+void mush_exit(int argc,char **args);
+
 
 #endif

@@ -1,5 +1,5 @@
 #include <commands.h>
-
+#include <builtin.h>
 
 
 int execute_fg(char **args)
@@ -52,26 +52,7 @@ int execute_bg(char **args)
   return pid;
 }
 
-void cambiar_dir(char **args)
-{
- if( chdir(args[1])==-1)
- {
-   perror("cd ");
- }
-}
 
-
-
-void show_history()
-{
-  HIST_ENTRY *entry;
-  int i=1;
-  while((entry=history_get(i))!=NULL)
-  {
-    printf("%d)%s\n",i,entry->line);
-    i++;
-  }
-}
 
 int eval_cmd(char **args,int argc)
 {
@@ -88,42 +69,31 @@ int eval_cmd(char **args,int argc)
  
   
  //is a shell command? 
-if(!strcmp(args[0],"history"))
-     {
-       show_history();
-     }
+if(!execute_builtins(argc,args))
+{
+  ;
+}
      
-     else if(!strcmp(args[0],"cd"))
-	{
-	  cambiar_dir(args);
-	}
-	else if(!strcmp(args[0],"exit"))
-	  {
-	    
-	    write_history("/home/abdel/projects/mush/historial");
-	    printf("\n Goodbye!!\n");
-	    exit(0);
-	
-	  }
-	  //not a shell command
-	  
-	  else if(!strcmp(args[argc-1],"&"))
-	  {
-	   //free(args[argc-1]);
-	   args[argc-1]=NULL;
-	   pid=execute_bg(args);
-	   
-	   if(pid>0)
-	   {
-	     printf("Proram executed with pid : %d\n",pid);
-	   }
-	    
-	  }
-	  
-	  else 
-	  {
-	    execute_fg(args);
-	  }
+  //not a shell command
+  
+  else if(!strcmp(args[argc-1],"&"))
+  {
+    //free(args[argc-1]);
+    args[argc-1]=NULL;
+    pid=execute_bg(args);
+    
+    if(pid>0)
+    {
+      printf("Program executed with pid : %d\n",pid);
+    }
+    
+  }
+  
+  else 
+  {
+    execute_fg(args);
+  }
+  
   return 0;
 
 }
