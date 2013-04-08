@@ -146,10 +146,11 @@ int main(int argc, char **argv) {
     //analizamos el comando
     
     args=NULL;
-    l=parse(comand,&args);
+   // l=parse(comand,&args);
     
+    mush_execute(comand);
     //interpretamos el comando
-    eval_cmd(args,l);
+    //eval_cmd(args,l);
     free(args);
     
     

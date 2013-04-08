@@ -1,6 +1,22 @@
 #include <commands.h>
 #include <builtin.h>
+#include <parser.h>
 
+#include <unistd.h>
+
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <fcntl.h>
+
+
+#define READ 0
+#define WRITE 1
+
+int in=STDIN_FILENO;
+int out=STDOUT_FILENO;
+
+int tuberia[2];
 
 int execute_fg(char **args)
 {
@@ -96,4 +112,76 @@ if(!execute_builtins(argc,args))
   
   return 0;
 
+}
+
+
+int mush_execute(char *cmd)
+{
+  char *subcmd=strchr(cmd,'|');
+  char **args=NULL;
+  int argc;
+  int pid;
+  int oldin;
+  
+  if(subcmd!=NULL)
+  {
+     int status;
+    
+    *subcmd='\0';
+    subcmd++;
+    
+    
+    pipe(tuberia);
+    
+    pid=fork();
+    
+      if(pid<0)
+      {
+
+	perror("fork ");
+	return -1;
+
+      }
+      
+  
+      else if (pid==0)
+	
+	{
+	 parse(cmd,&args);
+	  
+	  close(tuberia[WRITE]);
+	  dup2(tuberia[READ],out);
+	  
+	  close(tuberia[READ]);
+	  
+	  mush_execute(subcmd);
+	  
+	   if(execvp(args[0],args)==-1)
+           {
+             fprintf(stderr,"µSH : %s " ,args[0]);
+             perror(" ");
+             exit(EXIT_FAILURE);
+           }
+
+	}
+	
+	oldin=dup(in);
+	
+	close(tuberia[READ]);
+	dup2(tuberia[WRITE],in);
+	close(tuberia[WRITE]);
+	waitpid(pid,&status,0 );
+	
+	dup2(oldin,in);
+	
+  }
+  
+  else
+  {
+    argc=parse(cmd,&args);
+    execute_fg(args);
+  }
+  
+  
+  
 }

@@ -55,6 +55,8 @@ int execute_fg(char **args);
 int execute_bg(char **args);
 
 
+int mush_execute(char *cmd);
+
 
 int eval_cmd(char **args,int argc);
 
