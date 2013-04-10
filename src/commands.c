@@ -9,14 +9,29 @@
 #include <signal.h>
 #include <fcntl.h>
 
+#include <unistd.h>
 
-#define READ 0
-#define WRITE 1
+#define OUTPUT 0
+#define INPUT 1
 
 int in=STDIN_FILENO;
 int out=STDOUT_FILENO;
 
 int tuberia[2];
+
+void conect_pipe_output_to_stdin(int p[2])
+{
+  close(STDIN_FILENO);
+  dup(p[OUTPUT]);
+  close(p[OUTPUT]);
+}
+
+void conect_pipe_input_to_stdout(int p[2])
+{
+  close(STDOUT_FILENO);
+  dup(p[INPUT]);
+  close(p[INPUT]);
+}
 
 int execute_fg(char **args)
 {
@@ -36,6 +51,20 @@ int execute_fg(char **args)
   else return -1;
 }
 
+int execute_intern(char **args)
+{
+ 
+  parse(cmd,&args);
+
+    if(execvp(args[0],args)==-1)
+    {
+      fprintf(stderr,"µSH : %s " ,args[0]);
+      perror("execvp");
+      return -1;
+    }
+
+  return 0;
+}
 
 int execute_bg(char **args)
 {
@@ -115,73 +144,75 @@ if(!execute_builtins(argc,args))
 }
 
 
-int mush_execute(char *cmd)
+void mush_execute_intern(char *cmd)
 {
   char *subcmd=strchr(cmd,'|');
   char **args=NULL;
-  int argc;
+  int status;
   int pid;
-  int oldin;
+  int t[2];
+  
   
   if(subcmd!=NULL)
   {
-     int status;
     
-    *subcmd='\0';
-    subcmd++;
-    
-    
-    pipe(tuberia);
-    
-    pid=fork();
-    
-      if(pid<0)
-      {
-
-	perror("fork ");
-	return -1;
-
-      }
-      
+  pipe(t);
   
-      else if (pid==0)
-	
-	{
-	 parse(cmd,&args);
-	  
-	  close(tuberia[WRITE]);
-	  dup2(tuberia[READ],out);
-	  
-	  close(tuberia[READ]);
-	  
-	  mush_execute(subcmd);
-	  
-	   if(execvp(args[0],args)==-1)
-           {
-             fprintf(stderr,"µSH : %s " ,args[0]);
-             perror(" ");
-             exit(EXIT_FAILURE);
-           }
-
-	}
-	
-	oldin=dup(in);
-	
-	close(tuberia[READ]);
-	dup2(tuberia[WRITE],in);
-	close(tuberia[WRITE]);
-	waitpid(pid,&status,0 );
-	
-	dup2(oldin,in);
-	
+  pid=fork();
+    
+  if(pid<0)
+  {
+    perror("mush_execute_intern:fork");
+    return -1;
   }
+  else if(pid==0)
+  {
+    conect_pipe_output_to_stdin(t);
+    
+    mush_execute_intern(subcmd);
+    
+    
+  }
+  else 
+  {
+    conect_pipe_input_to_stdout(t);
+    
+    execute_intern(args);
+    
+    while(wait(&status)>0);
+    
+  }
+  
+  }//if(subcmd!=NULL)
   
   else
   {
-    argc=parse(cmd,&args);
+    
     execute_fg(args);
+    
   }
   
   
+}
+
+int mush_execute(char *cmd)
+{
+ 
+  int pid;
+  int status;
+  
+  pid=fork();
+  if(pid<0)
+  {
+    perror("mush_execute:fork");
+    return -1;
+  }
+  else if(pid==0)
+  {
+    mush_execute_intern(cmd);
+  }
+ else while(wait(&status)>0);
+ 
+ return -1;
   
 }
