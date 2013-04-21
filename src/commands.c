@@ -54,7 +54,7 @@ int execute_fg(char **args)
 int execute_intern(char **args)
 {
  
-  parse(cmd,&args);
+  //parse(cmd,&args);
 
     if(execvp(args[0],args)==-1)
     {
@@ -147,6 +147,8 @@ if(!execute_builtins(argc,args))
 void mush_execute_intern(char *cmd)
 {
   char *subcmd=strchr(cmd,'|');
+  *subcmd=0;
+  subcmd++;
   char **args=NULL;
   int status;
   int pid;
@@ -163,7 +165,7 @@ void mush_execute_intern(char *cmd)
   if(pid<0)
   {
     perror("mush_execute_intern:fork");
-    return -1;
+    
   }
   else if(pid==0)
   {
@@ -176,7 +178,7 @@ void mush_execute_intern(char *cmd)
   else 
   {
     conect_pipe_input_to_stdout(t);
-    
+     parse(cmd,&args);
     execute_intern(args);
     
     while(wait(&status)>0);
@@ -187,17 +189,20 @@ void mush_execute_intern(char *cmd)
   
   else
   {
-    
+    parse(cmd,&args);
     execute_fg(args);
     
   }
   
-  
+  exit(0);
 }
 
 int mush_execute(char *cmd)
 {
  
+  cmd *cmds[64];
+  int c=0;
+  int i;
   int pid;
   int status;
   
@@ -209,8 +214,23 @@ int mush_execute(char *cmd)
   }
   else if(pid==0)
   {
-    mush_execute_intern(cmd);
+    c=0;
+    
+    cmds[0]=cmd;
+    while(*cmd!=0 && cmds[c]!=NULL)
+    {
+  
+      c++;
+      cmds[c]=strchr(cmd,'|');
+      if(coms[c
+      
+    }
+    
+    for(i=0;i<=
+   
   }
+  
+  
  else while(wait(&status)>0);
  
  return -1;
