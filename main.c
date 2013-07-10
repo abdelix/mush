@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
    
    while(1)
    {
-     sprintf(prompt,"µSH @ %s ]> ",get_current_dir_name());
+     sprintf(prompt,"\x1B[32mµSH @ %s $\x1B[0m",get_current_dir_name());
      
     
      do{

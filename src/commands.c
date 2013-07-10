@@ -1,7 +1,6 @@
 #include <commands.h>
 #include <builtin.h>
 #include <parser.h>
-#include <command_type.h>
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -15,17 +14,17 @@
 #define WRITE_END 1
 
 
-int execute_fg(char **args)
+int execute_fg(char *cmd)
 {
   int pid;
   int status;
-  pid=execute_bg(args);
+  pid=execute_bg(cmd);
   
   if(pid>0)
   {
     waitpid(pid,&status,0);
    
-    printf("\nProgram exited with code : %d \n",status);
+    //printf("\nProgram exited with code : %d \n",status);
     
     return 0;
   }
@@ -35,7 +34,7 @@ int execute_fg(char **args)
 
 
 
-int execute_bg(char **args)
+int execute_bg(char *cmd)
 {
   int pid;
   int status;
@@ -52,12 +51,7 @@ int execute_bg(char **args)
   else if (pid==0)
   {
    
-    if(execvp(args[0],args)==-1)
-    {
-      fprintf(stderr,"µSH : %s " ,args[0]);
-      perror(" ");
-      exit(EXIT_FAILURE);
-    }
+   ejecutar(cmd);
     
   }
   
@@ -97,25 +91,48 @@ int ejecutar(char *cmd)
       return -1;
     }
     
-    close(p[WRITE_END]);
-    close(STDIN_FILENO);
-    dup(p[READ_END]);
-    eval_cmd(cmd2);
+    int pid2=fork();
     
-    waitpid(pid,NULL,0);
-
+    if(pid2==0)
+    {
+      close(p[WRITE_END]);
+      close(STDIN_FILENO);
+      dup(p[READ_END]);
+      eval_cmd(cmd2);
+    
+      exit(-1);
+    }
+    else if(pid2<0)
+    {
+      perror("fork");
+    }
+    
+    else 
+    {
+      
+      waitpid(pid,NULL,0);
+     
+      
+      exit(0);
+      
+    }
    
    
   }
   
   else 
   {
+    
+    
       char **args=NULL;
       parse(cmd,&args);
       
       execvp(args[0],args);
       perror("execvp");
+      free(args);
       exit(EXIT_FAILURE);
+      
+      
     
   }
   
@@ -128,7 +145,7 @@ int ejecutar(char *cmd)
 
 int eval_cmd(char *cmd)
 {
-  int pid=fork();
+  /*int pid=fork();
   
   if(pid==0)
   {
@@ -142,8 +159,29 @@ int eval_cmd(char *cmd)
    return -1;
  }
  
-waitpid(pid,NULL,0);
+waitpid(pid,NULL,0);*/
+  
+  char **args=NULL;
+  char *cmd2=(char *)malloc(strlen(cmd)+1);
+  
+  memcpy(cmd2,cmd,strlen(cmd)+1);
+  
+  int argc=  parse(cmd2,&args);
+  
+ if(execute_builtins(argc,args)==0)
+ {
+   ;
+ }
  
+ else  if(cmd[strlen(cmd)-1]=='&')
+ {
+   cmd[strlen(cmd)-1]=0;
+   execute_bg(cmd);
+ }
+ else
+ {
+  execute_fg(cmd);
+ }
  return 0;
  
 }
