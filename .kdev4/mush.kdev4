@@ -12,7 +12,7 @@ Extra Arguments=
 ProjectRootRelative=./
 
 [Launch]
-Launch Configurations=Launch Configuration 0
+Launch Configurations=Launch Configuration 0,Launch Configuration 1
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -30,6 +30,18 @@ External Terminal=xterm -hold -e %exe
 Project Target=mush,mush
 Use External Terminal=true
 Working Directory=
+isExecutable=false
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=mush
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Configured from ProjectItem=mush,mush
+Project Target=mush,mush
+Working Directory=file:///home/abdel/projects/mush/build/
 isExecutable=false
 
 [Project]

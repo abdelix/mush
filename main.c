@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
    
    while(1)
    {
-     sprintf(prompt,"µSH @ %s ]> ",get_current_dir_name());
+     sprintf(prompt,"\x1B[32mµSH @ %s $\x1B[0m",get_current_dir_name());
      
     
      do{
@@ -140,22 +140,25 @@ int main(int argc, char **argv) {
      
     }while(res==-1);
     
-    //añadimos el comando la lista del historial 
-    add_history(comand);
-    
-    //analizamos el comando
-    
-    args=NULL;
-    l=parse(comand,&args);
-    
-    eval_cmd(args,argc);
-    //interpretamos el comando
-    //eval_cmd(args,l);
-    free(args);
     
     
+    if(strlen(comand)>0 )
+    {
+      
+      //añadimos el comando la lista del historial 
+      add_history(comand);
+      
+      //Evaluamos el comando
+      
+      eval_cmd(comand);
+    }
     
-    //child_end(0);
+    
+    signal(SIGCHLD,SIG_IGN);
+    usleep(100000);
+    signal(SIGCHLD,&child_end);
+    
+    
     
   }//while(1) 
    

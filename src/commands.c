@@ -1,7 +1,6 @@
 #include <commands.h>
 #include <builtin.h>
 #include <parser.h>
-
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -11,39 +10,21 @@
 
 #include <unistd.h>
 
-#define OUTPUT 0
-#define INPUT 1
+#define READ_END 0
+#define WRITE_END 1
 
-int in=STDIN_FILENO;
-int out=STDOUT_FILENO;
 
-int tuberia[2];
-
-void conect_pipe_output_to_stdin(int p[2])
-{
-  close(STDIN_FILENO);
-  dup(p[OUTPUT]);
-  close(p[OUTPUT]);
-}
-
-void conect_pipe_input_to_stdout(int p[2])
-{
-  close(STDOUT_FILENO);
-  dup(p[INPUT]);
-  close(p[INPUT]);
-}
-
-int execute_fg(char **args)
+int execute_fg(char *cmd)
 {
   int pid;
   int status;
-  pid=execute_bg(args);
+  pid=execute_bg(cmd);
   
   if(pid>0)
   {
     waitpid(pid,&status,0);
    
-    printf("\nProgram exited with code : %d \n",status);
+    //printf("\nProgram exited with code : %d \n",status);
     
     return 0;
   }
@@ -53,7 +34,7 @@ int execute_fg(char **args)
 
 
 
-int execute_bg(char **args)
+int execute_bg(char *cmd)
 {
   int pid;
   int status;
@@ -70,12 +51,7 @@ int execute_bg(char **args)
   else if (pid==0)
   {
    
-    if(execvp(args[0],args)==-1)
-    {
-      fprintf(stderr,"µSH : %s " ,args[0]);
-      perror(" ");
-      exit(EXIT_FAILURE);
-    }
+   ejecutar(cmd);
     
   }
   
@@ -86,48 +62,128 @@ int execute_bg(char **args)
 
 
 
-int eval_cmd(char **args,int argc)
+int ejecutar(char *cmd)
 {
-  int pid;
+   char *cmd2=strchr(cmd,'|');
   
-  if (argc==0)
+  int p[2];
+  
+  if(cmd2!=NULL)
   {
-    //Nothing to do
-    
-    return 0;
-    
-  }
-  
- 
-  
- //is a shell command? 
-if(!execute_builtins(argc,args))
-{
-  ;
-}
-     
-  //not a shell command
-  
-  else if(!strcmp(args[argc-1],"&"))
-  {
-    //free(args[argc-1]);
-    args[argc-1]=NULL;
-    pid=execute_bg(args);
-    
-    if(pid>0)
+   *cmd2=0;
+   cmd2++;
+   
+   pipe(p);
+   
+   int pid=fork();
+    if(pid==0)
     {
-      printf("Program executed with pid : %d\n",pid);
+      close(p[READ_END]);
+      close(STDOUT_FILENO);
+      dup(p[WRITE_END]);
+      
+      eval_cmd(cmd);
+      exit(0);
+    }
+    else if(pid<0)
+    {
+      perror("fork");
+      return -1;
     }
     
+    int pid2=fork();
+    
+    if(pid2==0)
+    {
+      close(p[WRITE_END]);
+      close(STDIN_FILENO);
+      dup(p[READ_END]);
+      eval_cmd(cmd2);
+    
+      exit(-1);
+    }
+    else if(pid2<0)
+    {
+      perror("fork");
+    }
+    
+    else 
+    {
+      
+      waitpid(pid,NULL,0);
+     
+      
+      exit(0);
+      
+    }
+   
+   
   }
   
   else 
   {
-    execute_fg(args);
+    
+    
+      char **args=NULL;
+      parse(cmd,&args);
+      
+      execvp(args[0],args);
+      perror("execvp");
+      free(args);
+      exit(EXIT_FAILURE);
+      
+      
+    
   }
   
+  
+  
   return 0;
+}
 
+
+
+int eval_cmd(char *cmd)
+{
+  /*int pid=fork();
+  
+  if(pid==0)
+  {
+    ejecutar(cmd);
+    exit(-1);
+  }
+  
+ else if (pid<0)
+ {
+   perror("eval_cmd:fork");
+   return -1;
+ }
+ 
+waitpid(pid,NULL,0);*/
+  
+  char **args=NULL;
+  char *cmd2=(char *)malloc(strlen(cmd)+1);
+  
+  memcpy(cmd2,cmd,strlen(cmd)+1);
+  
+  int argc=  parse(cmd2,&args);
+  
+ if(execute_builtins(argc,args)==0)
+ {
+   ;
+ }
+ 
+ else  if(cmd[strlen(cmd)-1]=='&')
+ {
+   cmd[strlen(cmd)-1]=0;
+   execute_bg(cmd);
+ }
+ else
+ {
+  execute_fg(cmd);
+ }
+ return 0;
+ 
 }
 
 

@@ -43,7 +43,7 @@
  * @return: 0 on succes , -1 on failure
  * 
  */
-int execute_fg(char **args);
+int execute_fg(char *cmd);
 
 /*
  * Executes a command in background
@@ -52,10 +52,10 @@ int execute_fg(char **args);
  * @return: 0 on succes , -1 on failure
  * 
  */
-int execute_bg(char **args);
+int execute_bg(char *cmd);
 
 
 
-int eval_cmd(char **args,int argc);
+int eval_cmd(char *cmd);
 
 #endif

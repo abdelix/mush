@@ -88,14 +88,14 @@ void mush_history(int argc,char **args)
   {
     show_history();
   }
-  else if(strcmp(args[1],"-c"))
+  else if(strcmp(args[1],"-c")==0)
   {
     clear_history();
   }
   
   else 
   {
-    printf("history : unrecognized argument %s\n",args[1]);
+    printf("history : unrecognized argument \"%s\"\n",args[1]);
   }
   
   
