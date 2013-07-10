@@ -56,6 +56,6 @@ int execute_bg(char **args);
 
 
 
-int eval_cmd(char **args,int argc);
+int eval_cmd(char *cmd);
 
 #endif

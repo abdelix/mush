@@ -1,7 +1,7 @@
 #include <commands.h>
 #include <builtin.h>
 #include <parser.h>
-
+#include <command_type.h>
 #include <unistd.h>
 
 #include <sys/types.h>
@@ -11,27 +11,9 @@
 
 #include <unistd.h>
 
-#define OUTPUT 0
-#define INPUT 1
+#define READ_END 0
+#define WRITE_END 1
 
-int in=STDIN_FILENO;
-int out=STDOUT_FILENO;
-
-int tuberia[2];
-
-void conect_pipe_output_to_stdin(int p[2])
-{
-  close(STDIN_FILENO);
-  dup(p[OUTPUT]);
-  close(p[OUTPUT]);
-}
-
-void conect_pipe_input_to_stdout(int p[2])
-{
-  close(STDOUT_FILENO);
-  dup(p[INPUT]);
-  close(p[INPUT]);
-}
 
 int execute_fg(char **args)
 {
@@ -86,48 +68,84 @@ int execute_bg(char **args)
 
 
 
-int eval_cmd(char **args,int argc)
+int ejecutar(char *cmd)
 {
-  int pid;
+   char *cmd2=strchr(cmd,'|');
   
-  if (argc==0)
+  int p[2];
+  
+  if(cmd2!=NULL)
   {
-    //Nothing to do
-    
-    return 0;
-    
-  }
-  
- 
-  
- //is a shell command? 
-if(!execute_builtins(argc,args))
-{
-  ;
-}
-     
-  //not a shell command
-  
-  else if(!strcmp(args[argc-1],"&"))
-  {
-    //free(args[argc-1]);
-    args[argc-1]=NULL;
-    pid=execute_bg(args);
-    
-    if(pid>0)
+   *cmd2=0;
+   cmd2++;
+   
+   pipe(p);
+   
+   int pid=fork();
+    if(pid==0)
     {
-      printf("Program executed with pid : %d\n",pid);
+      close(p[READ_END]);
+      close(STDOUT_FILENO);
+      dup(p[WRITE_END]);
+      
+      eval_cmd(cmd);
+      exit(0);
+    }
+    else if(pid<0)
+    {
+      perror("fork");
+      return -1;
     }
     
+    close(p[WRITE_END]);
+    close(STDIN_FILENO);
+    dup(p[READ_END]);
+    eval_cmd(cmd2);
+    
+    waitpid(pid,NULL,0);
+
+   
+   
   }
   
   else 
   {
-    execute_fg(args);
+      char **args=NULL;
+      parse(cmd,&args);
+      
+      execvp(args[0],args);
+      perror("execvp");
+      exit(EXIT_FAILURE);
+    
   }
   
+  
+  
   return 0;
+}
 
+
+
+int eval_cmd(char *cmd)
+{
+  int pid=fork();
+  
+  if(pid==0)
+  {
+    ejecutar(cmd);
+    exit(-1);
+  }
+  
+ else if (pid<0)
+ {
+   perror("eval_cmd:fork");
+   return -1;
+ }
+ 
+waitpid(pid,NULL,0);
+ 
+ return 0;
+ 
 }
 
 
