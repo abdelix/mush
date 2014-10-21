@@ -34,7 +34,9 @@ This shell only depends on standard posix libraries and [GNU Readline](gnu.org)
 
 In a shell you must run in the main directory of the project :
 	
+	
 	$ cd build/
+	$ cmake
 	$ make
 
 #### Run
