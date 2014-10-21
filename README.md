@@ -1,31 +1,49 @@
-mush
-====
+## muSH or µSH
+By Abdelfetah Hadij 
+A Micro Unix SHell.
 
-A micro unix  Shell
 
-By Abdelfetah Hadij (abdel.14(at)gmail.com)
 
-Dependencies
-============
+#### Features
 
-* Gnu Readline
+* Works on any unix like system.
+* Execute commands in foreground and background.
+* Change directory trough built in command 'cd'.
+* Persistent History.
+* History navigation.
+* Path  completion with tab.
+* Pipeling
+#### To- do 
 
-License 
-=======
+* Command completion
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
- any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-MA 02110-1301, USA.
+#### Get the source
 
-For more details see lincense.txt
+[Go to GitHub Repository](http://github.com/abdelix/mush)
+  
+  
+[Download git repository as zip](https://github.com/abdelix/mush/archive/master.zip)
+
+#### Dependencies
+
+This shell only depends on standard posix libraries and [GNU Readline](gnu.org)
+
+#### Build
+
+In a shell you must run in the main directory of the project :
+	
+	$ cd build/
+	$ make
+
+#### Run
+In the same directory as before (build) you must run the shell as :
+
+	$ ./mush
+
+---------------------
+    
+
+
+
