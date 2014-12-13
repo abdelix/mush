@@ -1,5 +1,6 @@
 ## muSH or µSH
 By Abdelfetah Hadij 
+
 A Micro Unix SHell.
 
 
@@ -12,7 +13,7 @@ A Micro Unix SHell.
 * Persistent History.
 * History navigation.
 * Path  completion with tab.
-* Pipeling
+* Pipeline capable
 #### To- do 
 
 * Command completion
@@ -40,7 +41,7 @@ In a shell you must run in the main directory of the project :
 	$ make
 
 #### Run
-In the same directory as before (build) you must run the shell as :
+In the same directory as before (./build) you must run the shell as :
 
 	$ ./mush
 
